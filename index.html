@@ -19,7 +19,6 @@
             max-width: 900px;
             margin: 0 auto;
         }
-        /* 卡片样式 */
         .card {
             background: white;
             border-radius: 32px;
@@ -58,7 +57,6 @@
             padding: 4px 12px;
             border-radius: 40px;
         }
-        /* 文章高亮样式 */
         .reading-text {
             background: #fefce8;
             padding: 20px;
@@ -82,7 +80,6 @@
         .highlight-word:hover {
             background-color: #facc15;
         }
-        /* 表格样式 */
         .note-box {
             background: #eef2ff;
             border-radius: 20px;
@@ -91,7 +88,6 @@
             font-size: 0.85rem;
             color: #1e3a8a;
         }
-        /* 姓名输入栏 */
         .student-info {
             background: #e6f7f0;
             border-radius: 24px;
@@ -124,7 +120,6 @@
             margin-top: 6px;
             display: none;
         }
-        /* 单词卡片样式 */
         .word-grid {
             display: flex;
             flex-direction: column;
@@ -300,7 +295,7 @@
         <p class="sub">✨ 主题：My Calm Blanket for Kids —— 先读文章，再学单词，完成练习后提交预习报告。</p>
     </div>
 
-    <!-- ========== 第一部分：文章原文 + 高亮核心词汇 ========== -->
+    <!-- 文章原文 + 高亮 -->
     <div class="card">
         <h2>📄 阅读材料</h2>
         <div class="reading-text" id="articleText">
@@ -314,20 +309,20 @@
         </div>
     </div>
 
-    <!-- ========== 第二部分：学生信息填写（必填） ========== -->
+    <!-- 学生信息 -->
     <div class="card student-info">
         <label>👤 你的姓名 (请填写真实姓名) <span style="color:#b91c1c;">*</span></label>
         <input type="text" id="studentName" placeholder="例如：张三" autocomplete="off">
         <div id="nameError" class="error-msg">请填写姓名后再提交预习报告！</div>
     </div>
 
-    <!-- ========== 第三部分：核心词汇 + 发音按钮 ========== -->
+    <!-- 核心词汇 + 发音 -->
     <div class="card">
         <h2>🎧 核心词汇 & 短语（点击🔊听发音，点击文中高亮单词也可听发音）</h2>
         <div class="word-grid" id="vocabList"></div>
     </div>
 
-    <!-- ========== 第四部分：练习题（Part 1 单词配对 + Part 2 阅读理解） ========== -->
+    <!-- 练习题 -->
     <div class="card">
         <h2>📝 预习小测 · 巩固练习</h2>
         <p style="margin-bottom: 12px;">✏️ <strong>Part 1</strong> 单词配对 (英文→中文) &nbsp;|&nbsp; <strong>Part 2</strong> 阅读理解细节题</p>
@@ -345,7 +340,7 @@
 </div>
 
 <script>
-    // ==================== 1. 核心词汇（13个，含中文） ====================
+    // ==================== 核心词汇 ====================
     const vocabulary = [
         { en: "weighted blanket", zh: "重力毯" },
         { en: "encourage", zh: "鼓励" },
@@ -362,7 +357,6 @@
         { en: "hesitate", zh: "犹豫" }
     ];
 
-    // 发音函数
     function speakText(text) {
         if (!window.speechSynthesis) {
             alert("抱歉，您的浏览器不支持语音发音。");
@@ -376,7 +370,6 @@
         window.speechSynthesis.speak(utterance);
     }
 
-    // 渲染单词 + 发音按钮
     function renderVocabWithAudio() {
         const container = document.getElementById('vocabList');
         if (!container) return;
@@ -393,7 +386,6 @@
             `;
         });
         container.innerHTML = html;
-
         document.querySelectorAll('.sound-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -403,7 +395,6 @@
         });
     }
 
-    // 给文中高亮单词绑定点击发音
     function bindArticleHighlightClick() {
         const highlights = document.querySelectorAll('.highlight-word');
         highlights.forEach(el => {
@@ -427,8 +418,7 @@
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // ==================== 2. 题目设计 ====================
-    // Part 1: 单词配对 (5题)
+    // ==================== 题目 ====================
     const part1Questions = [
         { id: 101, type: 'match', questionText: '单词 "weighted blanket" 的中文意思是？', options: ['重力毯', '轻质被子', '保暖床单'], correct: '重力毯' },
         { id: 102, type: 'match', questionText: '单词 "silent" 的中文意思是？', options: ['吵闹的', '安静的', '温暖的'], correct: '安静的' },
@@ -436,31 +426,22 @@
         { id: 104, type: 'match', questionText: '短语 "special offer" 的正确翻译是？', options: ['特别礼物', '特价优惠', '专属服务'], correct: '特价优惠' },
         { id: 105, type: 'match', questionText: '单词 "calm" 的中文意思最接近？', options: ['激动的', '平静的', '吵闹的'], correct: '平静的' }
     ];
-
-    // Part 2: 阅读理解 (3题，基于原文)
     const part2Questions = [
         { id: 201, type: 'reading', questionText: '根据文章，“重力毯” 正确的英文表达是？', options: ['Heavy cover', 'Weighted blanket', 'Gravity quilt', 'Calm sheet'], correct: 'Weighted blanket' },
         { id: 202, type: 'reading', questionText: 'My Calm Blanket 里面帮助睡眠的填充物是什么？', options: ['Small stones', 'Glass beads', 'Cotton balls', 'Plastic pellets'], correct: 'Glass beads' },
         { id: 203, type: 'reading', questionText: '文中提到这种毯子的表面触感如何？', options: ['Cool and rough', 'Soft and warm', 'Hard and noisy', 'Thin and slippery'], correct: 'Soft and warm' }
     ];
-
     const allQuestions = [...part1Questions, ...part2Questions];
     let userAnswers = {};
     allQuestions.forEach(q => { userAnswers[q.id] = null; });
 
-    // 渲染测验
     function renderFullQuiz() {
         const container = document.getElementById('quizContainer');
         if (!container) return;
-        let html = `
-            <div class="quiz-section">
-                <div class="section-title">🔤 Part 1 · 单词配对 (英文→中文)</div>
-        `;
+        let html = `<div class="quiz-section"><div class="section-title">🔤 Part 1 · 单词配对 (英文→中文)</div>`;
         part1Questions.forEach(q => {
             const selectedVal = userAnswers[q.id] || '';
-            html += `<div class="quiz-question" data-qid="${q.id}">
-                        <div style="font-weight: 600; margin-bottom: 8px;">📌 ${q.id-100}. ${escapeHtml(q.questionText)}</div>
-                        <div class="options" id="options-${q.id}">`;
+            html += `<div class="quiz-question" data-qid="${q.id}"><div style="font-weight: 600; margin-bottom: 8px;">📌 ${q.id-100}. ${escapeHtml(q.questionText)}</div><div class="options" id="options-${q.id}">`;
             q.options.forEach(opt => {
                 const isSelected = (selectedVal === opt);
                 html += `<div class="option-btn ${isSelected ? 'selected' : ''}" data-qid="${q.id}" data-opt="${escapeAttr(opt)}">${escapeHtml(opt)}</div>`;
@@ -470,9 +451,7 @@
         html += `<div class="section-title" style="margin-top: 24px;">📖 Part 2 · 阅读理解 (细节理解)</div>`;
         part2Questions.forEach(q => {
             const selectedVal = userAnswers[q.id] || '';
-            html += `<div class="quiz-question" data-qid="${q.id}">
-                        <div style="font-weight: 600; margin-bottom: 8px;">✍️ ${q.id-200}. ${escapeHtml(q.questionText)}</div>
-                        <div class="options" id="options-${q.id}">`;
+            html += `<div class="quiz-question" data-qid="${q.id}"><div style="font-weight: 600; margin-bottom: 8px;">✍️ ${q.id-200}. ${escapeHtml(q.questionText)}</div><div class="options" id="options-${q.id}">`;
             q.options.forEach(opt => {
                 const isSelected = (selectedVal === opt);
                 html += `<div class="option-btn ${isSelected ? 'selected' : ''}" data-qid="${q.id}" data-opt="${escapeAttr(opt)}">${escapeHtml(opt)}</div>`;
@@ -504,44 +483,41 @@
         });
     }
 
-    // 提交并收集数据（接入 Formspree / Google Forms）
-    // ========== 重要配置区：请替换为你自己的 Formspree 端点 ==========
-    // 步骤：访问 formspree.io -> 注册免费账户 -> 创建表单 -> 获取端点 URL（格式如 https://formspree.io/f/xxxxxx）
-    // 把下面的 'YOUR_FORMSPREE_ENDPOINT' 替换成你自己的端点 URL 即可
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORMSPREE_ENDPOINT';
-    // ================================================================
+    // ==================== Google Sheets 提交（替换 Formspree） ====================
+    // 您提供的 Web App 网址
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5ssmJJsqXLHOLrQ_Upg8Ae8IRR9Dq-7rywkD2bRdBtgAJCmvx6Z3DY6Vcv5bXaKKU/exec';
 
-    async function submitToFormspree(data) {
+    async function submitToGoogleSheets(data) {
         try {
-            const response = await fetch(FORMSPREE_ENDPOINT, {
+            const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                mode: 'no-cors',   // 因为 Apps Script 已配置 CORS，但 no-cors 更稳定
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify(data)
             });
-            if (response.ok) {
-                return { success: true };
-            } else {
-                return { success: false, error: `HTTP ${response.status}` };
-            }
+            // 由于 mode: 'no-cors'，我们无法读取 response 内容，默认成功
+            console.log("数据已发送到 Google Sheets", data);
+            return { success: true };
         } catch (error) {
+            console.error('提交到 Google Sheets 失败:', error);
             return { success: false, error: error.message };
         }
     }
 
+    // ==================== 提交主函数 ====================
     async function submitQuiz() {
-        // 获取姓名并验证
+        // 验证姓名
         const studentName = document.getElementById('studentName').value.trim();
         const nameError = document.getElementById('nameError');
         if (!studentName) {
             nameError.style.display = 'block';
-            const submitBtn = document.getElementById('submitQuiz');
-            submitBtn.disabled = false;
-            submitBtn.textContent = '✅ 提交预习报告（系统将记录你的作答数据）';
             return;
         }
         nameError.style.display = 'none';
 
-        // 计算答题情况
+        // 计算成绩
         let total = allQuestions.length;
         let correctCount = 0;
         const details = [];
@@ -558,21 +534,20 @@
                 isCorrect: isCor
             });
         }
-
         const scorePercent = Math.round((correctCount / total) * 100);
         const submitTime = new Date().toISOString();
 
         // 准备提交数据
-        const submissionData = {
+        const formDataFlat = {
             studentName: studentName,
             submitTime: submitTime,
             totalQuestions: total,
             correctCount: correctCount,
             scorePercent: scorePercent,
-            answers: details
+            answersSummary: JSON.stringify(details)
         };
 
-        // 显示分析报告（前端展示）
+        // 显示分析报告（前端）
         const resultPanel = document.getElementById('resultPanel');
         const scoreSpan = document.getElementById('scoreDisplay');
         const analysisText = document.getElementById('analysisText');
@@ -598,50 +573,39 @@
         analysisText.innerHTML = analysisMsg;
         resultPanel.style.display = 'block';
 
-        // 数据提交到 Formspree（转换为简单键值对）
-        const formDataFlat = {
-            studentName: studentName,
-            submitTime: submitTime,
-            totalQuestions: total,
-            correctCount: correctCount,
-            scorePercent: scorePercent,
-            answersSummary: JSON.stringify(details)
-        };
-
-            // ----- 替换原有的数据收集逻辑 -----
-    // 将下面的 'YOUR_DEPLOYED_SCRIPT_URL' 换成你自己的 Web 应用网址
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5ssmJJsqXLHOLrQ_Upg8Ae8IRR9Dq-7rywkD2bRdBtgAJCmvx6Z3DY6Vcv5bXaKKU/exec';
-
-    // --- 删除或注释掉原有的 FORMSPREE_ENDPOINT 和 submitToFormspree 函数 ---
-    // const FORMSPREE_ENDPOINT = '...'; // 这行可以删除
-    // async function submitToFormspree(data) { ... } // 这个函数可以删除
-
-    // 使用新的函数提交到 Google Sheets
-    async function submitToGoogleSheets(data) {
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            });
-            // 由于 mode: 'no-cors'，我们无法读取 response 的内容
-            // 这里默认返回成功，实际成功与否可去 Google Sheets 查看
-            console.log("Data sent to Google Sheets.");
-            return { success: true };
-        } catch (error) {
-            console.error('Error submitting to Google Sheets:', error);
-            return { success: false, error: error.message };
+        // 提交到 Google Sheets
+        const submitResult = await submitToGoogleSheets(formDataFlat);
+        if (submitResult.success) {
+            submitStatus.innerHTML = '✅ 预习报告已成功提交！老师会看到你的学习数据～';
+            submitStatus.style.color = '#0f6e3f';
+        } else {
+            submitStatus.innerHTML = `⚠️ 提交失败（${submitResult.error || '网络错误'}）。但你的预习报告已显示在下方，请截图保存。`;
+            submitStatus.style.color = '#b91c1c';
         }
+
+        // 控制台输出供教师查看
+        console.log('===== 智能化预习分析 (教师视角) =====');
+        console.log(`学生姓名: ${studentName}`);
+        console.log(`提交时间: ${submitTime}`);
+        console.log(`总分: ${correctCount}/${total} | 准确率: ${scorePercent}%`);
+        console.log('逐题详情:', details);
     }
 
-    // --- 修改提交函数内部的调用 ---
-    // 在 async function submitQuiz() 函数内部，找到并替换提交数据的部分
-    // 将原本的 const submitResult = await submitToFormspree(formDataFlat);
-    // 替换为：
-    const submitResult = await submitToGoogleSheets(formDataFlat);
+    // 绑定提交按钮
+    let isSubmitting = false;
+    const submitBtn = document.getElementById('submitQuiz');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', async () => {
+            if (isSubmitting) return;
+            isSubmitting = true;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '📤 提交中...';
+            await submitQuiz();
+            submitBtn.disabled = false;
+            submitBtn.textContent = '✅ 提交预习报告（系统将记录你的作答数据）';
+            isSubmitting = false;
+        });
+    }
 
     // 初始化
     function init() {
