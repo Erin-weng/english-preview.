@@ -608,39 +608,40 @@
             answersSummary: JSON.stringify(details)
         };
 
-        const submitResult = await submitToFormspree(formDataFlat);
-        if (submitResult.success) {
-            submitStatus.innerHTML = '✅ 预习报告已成功提交！老师会看到你的学习数据～';
-            submitStatus.style.color = '#0f6e3f';
-        } else {
-            submitStatus.innerHTML = `⚠️ 提交失败（${submitResult.error || '网络错误'}）。但你的预习报告已显示在下方，请截图保存。`;
-            submitStatus.style.color = '#b91c1c';
+            // ----- 替换原有的数据收集逻辑 -----
+    // 将下面的 'YOUR_DEPLOYED_SCRIPT_URL' 换成你自己的 Web 应用网址
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5ssmJJsqXLHOLrQ_Upg8Ae8IRR9Dq-7rywkD2bRdBtgAJCmvx6Z3DY6Vcv5bXaKKU/exec';
+
+    // --- 删除或注释掉原有的 FORMSPREE_ENDPOINT 和 submitToFormspree 函数 ---
+    // const FORMSPREE_ENDPOINT = '...'; // 这行可以删除
+    // async function submitToFormspree(data) { ... } // 这个函数可以删除
+
+    // 使用新的函数提交到 Google Sheets
+    async function submitToGoogleSheets(data) {
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            // 由于 mode: 'no-cors'，我们无法读取 response 的内容
+            // 这里默认返回成功，实际成功与否可去 Google Sheets 查看
+            console.log("Data sent to Google Sheets.");
+            return { success: true };
+        } catch (error) {
+            console.error('Error submitting to Google Sheets:', error);
+            return { success: false, error: error.message };
         }
-
-        // 控制台输出教师端数据
-        console.log('===== 智能化预习分析 (教师视角) =====');
-        console.log(`学生姓名: ${studentName}`);
-        console.log(`提交时间: ${submitTime}`);
-        console.log(`总分: ${correctCount}/${total} | 准确率: ${scorePercent}%`);
-        console.log('逐题详情:', details);
-        console.log('推荐课堂关注词汇: weighted blanket, glass beads, special offer, silent');
     }
 
-    // 处理提交按钮状态
-    let isSubmitting = false;
-    const submitBtn = document.getElementById('submitQuiz');
-    if (submitBtn) {
-        submitBtn.addEventListener('click', async () => {
-            if (isSubmitting) return;
-            isSubmitting = true;
-            submitBtn.disabled = true;
-            submitBtn.textContent = '📤 提交中...';
-            await submitQuiz();
-            submitBtn.disabled = false;
-            submitBtn.textContent = '✅ 提交预习报告（系统将记录你的作答数据）';
-            isSubmitting = false;
-        });
-    }
+    // --- 修改提交函数内部的调用 ---
+    // 在 async function submitQuiz() 函数内部，找到并替换提交数据的部分
+    // 将原本的 const submitResult = await submitToFormspree(formDataFlat);
+    // 替换为：
+    const submitResult = await submitToGoogleSheets(formDataFlat);
 
     // 初始化
     function init() {
